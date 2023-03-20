@@ -23,6 +23,21 @@ The comment key-value pair is not necessary.
 
 The incident key-value pair is for the incident number that the task is about, and will be used to screen-pop the right incident page.
 
-# Sample videos
+# Sample video - existing incident
+
+
+https://user-images.githubusercontent.com/98812531/226387828-4e33de48-70bc-48f4-8c1d-bf94bc2e426e.mov
+
+
+# Sample video - new incident
+
+
+https://user-images.githubusercontent.com/98812531/226388110-7d2fa8e6-fbc1-4173-8211-a7938daa2a14.mov
+
+
+# Sample video - smart window sizing
+
+
+https://user-images.githubusercontent.com/98812531/226388394-a4b4eb97-883a-48de-af9e-18b92561b36c.mov
 
 
