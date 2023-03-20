@@ -7,6 +7,9 @@ Additionally, links to open other pages have been embedded on Flex, so as to aut
 The time to deploy is minimal and no development is required on service now.
 
 ## Setup
+
+Edit the SnowPlugin.tsx file in src folder, line 23 where it says: `et screenPopBaseURL = "https://dev69218.service-now.com";` make sure the url is for your own Service Now instance.
+
  
 This plugin will require modification of the existing Studio flow so that tasks come with the following attributes:
 
@@ -23,7 +26,7 @@ The `comment` key-value pair is not necessary.
 
 The `incident` key-value pair is for the incident number that the task is about, and will be used to screen-pop the right incident page.
 
-A sample Studio flow can be found in the twilio-studio directory.
+A sample Studio flow can be found in the twilio-studio folder.
 
 ## Usage
 
