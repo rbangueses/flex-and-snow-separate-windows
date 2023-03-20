@@ -23,6 +23,15 @@ The comment key-value pair is not necessary.
 
 The incident key-value pair is for the incident number that the task is about, and will be used to screen-pop the right incident page.
 
+A sample Studio flow can be found in the twilio-studio directory.
+
+## Usage
+
+It's recommended for agents to login to Service Now at the beginning of the day, as well as Flex. Once logged in, they can make the window smaller and position it at the left of the screen. The plugin will calculate the size of the Service Now window based on the Flex window as well as the screen size automatically.
+
+It's possible to simplify this process by creating a separate web page that will automatically login on Service Now and always opens Flex in a smaller window positioned on the left, but this piece of work has not been carried out yet.
+
+
 # Sample video - existing incident
 
 
