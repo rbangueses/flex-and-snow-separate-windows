@@ -8,7 +8,7 @@ The time to deploy is minimal and no development is required on service now.
 
 ## Setup
 
-Edit the SnowPlugin.tsx file in src folder, line 23 where it says: `et screenPopBaseURL = "https://dev69218.service-now.com";` make sure the url is for your own Service Now instance.
+Edit the SnowPlugin.tsx file in src folder, line 23 where it says: `let screenPopBaseURL = "https://dev69218.service-now.com";` make sure the url is for your own Service Now instance.
 
  
 This plugin will require modification of the existing Studio flow so that tasks come with the following attributes:
