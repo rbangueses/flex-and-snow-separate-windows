@@ -10,18 +10,18 @@ The time to deploy is minimal and no development is required on service now.
  
 This plugin will require modification of the existing Studio flow so that tasks come with the following attributes:
 
-{"sntype":"new", "comment":"" } 
+`{"sntype":"new", "comment":"" }`
 
 or 
 
-{"sntype":"existingIncident", "incident":"incident_number"}
+`{"sntype":"existingIncident", "incident":"incident_number"}`
 
 
-The sntype key-value pair identifies if the incoming interaction is about a new or existing incident.
+The `sntype` key-value pair identifies if the incoming interaction is about a new or existing incident.
 
-The comment key-value pair is not necessary.
+The `comment` key-value pair is not necessary.
 
-The incident key-value pair is for the incident number that the task is about, and will be used to screen-pop the right incident page.
+The `incident` key-value pair is for the incident number that the task is about, and will be used to screen-pop the right incident page.
 
 A sample Studio flow can be found in the twilio-studio directory.
 
