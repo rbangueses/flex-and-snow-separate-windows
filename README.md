@@ -1,32 +1,28 @@
-# Your custom Twilio Flex Plugin
+# Flex and Service Now on separate windows
 
-Twilio Flex Plugins allow you to customize the appearance and behavior of [Twilio Flex](https://www.twilio.com/flex). If you want to learn more about the capabilities and how to use the API, check out our [Flex documentation](https://www.twilio.com/docs/flex).
+This sample plugin shows another way of integrating Flex with an external solution such as Service Now. It basically screen-pops Service Now on different windows depending on the reason for the call / interaction. For example, if the call is about opening a new ticket, we open the new ticket window. If the interaction is about an existing ticket, we open the existing ticket. New use cases can be added.
+
+Additionally, links to open other pages have been embedded on Flex, so as to automatically open the list of existing tickets or even an external CRM. Modify this plugin to fit your needs.
+
+The time to deploy is minimal and no development is required on service now.
 
 ## Setup
+ 
+This plugin will require modification of the existing Studio flow so that tasks come with the following attributes:
 
-Make sure you have [Node.js](https://nodejs.org) as well as [`npm`](https://npmjs.com). We support Node >= 10.12 (and recommend the _even_ versions of Node). Afterwards, install the dependencies by running `npm install`:
+{"sntype":"new", "comment":"" } 
 
-```bash
-cd 
+or 
 
-# If you use npm
-npm install
-```
+{"sntype":"existingIncident", "incident":"incident_number"}
 
-Next, please install the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart) by running:
 
-```bash
-brew tap twilio/brew && brew install twilio
-```
+The sntype key-value pair identifies if the incoming interaction is about a new or existing incident.
 
-Finally, install the [Flex Plugin extension](https://github.com/twilio-labs/plugin-flex/tree/v1-beta) for the Twilio CLI:
+The comment key-value pair is not necessary.
 
-```bash
-twilio plugins:install @twilio-labs/plugin-flex
-```
+The incident key-value pair is for the incident number that the task is about, and will be used to screen-pop the right incident page.
 
-## Development
+# Sample videos
 
-Run `twilio flex:plugins --help` to see all the commands we currently support. For further details on Flex Plugins refer to our documentation on the [Twilio Docs](https://www.twilio.com/docs/flex/developer/plugins/cli) page.
 
-# flex-and-snow-separate-windows

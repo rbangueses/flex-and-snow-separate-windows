@@ -1,0 +1,584 @@
+{
+    "description": "A New Flow",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "next": "Intro",
+            "event": "incomingCall"
+          },
+          {
+            "next": "IntroConv",
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 490,
+            "y": -480
+          }
+        }
+      },
+      {
+        "name": "Intro",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "DTMFnewOrExisting",
+            "event": "keypress"
+          },
+          {
+            "next": "newOrExisting",
+            "event": "speech"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Emma-Neural",
+          "offset": {
+            "x": 150,
+            "y": 300
+          },
+          "hints": "new, existing",
+          "finish_on_key": "#",
+          "say": "Welcome to ACME Support. If you're calling about an existing incident press 1, otherwise press 2 to report a new incident.",
+          "language": "en-GB",
+          "stop_gather": true,
+          "profanity_filter": "true",
+          "timeout": 5,
+          "number_of_digits": 1,
+          "speech_timeout": "auto",
+          "loop": 1,
+          "gather_language": "en-GB"
+        }
+      },
+      {
+        "name": "newOrExisting",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "NewIncident",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains new",
+                "arguments": [
+                  "{{widgets.Intro.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "new"
+              }
+            ]
+          },
+          {
+            "next": "ExistingIncident",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains existing",
+                "arguments": [
+                  "{{widgets.Intro.SpeechResult}}"
+                ],
+                "type": "contains",
+                "value": "existing"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Intro.SpeechResult}}",
+          "offset": {
+            "x": 650,
+            "y": 620
+          }
+        }
+      },
+      {
+        "name": "NewIncident",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "event": "keypress"
+          },
+          {
+            "next": "HandoffNewIncident",
+            "event": "speech"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Emma-Neural",
+          "offset": {
+            "x": 300,
+            "y": 1030
+          },
+          "hints": "new, existing",
+          "finish_on_key": "#",
+          "say": "Ok, can you please provide a brief description of the incident?",
+          "language": "en-GB",
+          "stop_gather": true,
+          "profanity_filter": "true",
+          "timeout": 5,
+          "number_of_digits": 1,
+          "speech_timeout": "auto",
+          "loop": 1,
+          "gather_language": "en-GB"
+        }
+      },
+      {
+        "name": "ExistingIncident",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "HandoffExistingIncident",
+            "event": "keypress"
+          },
+          {
+            "next": "HandoffExistingIncidentNoID",
+            "event": "speech"
+          },
+          {
+            "next": "HandoffExistingIncidentNoID",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Emma-Neural",
+          "offset": {
+            "x": 960,
+            "y": 1060
+          },
+          "hints": "new, existing",
+          "finish_on_key": "#",
+          "say": "Ok, can you please dial your incident number?",
+          "language": "en-GB",
+          "stop_gather": true,
+          "profanity_filter": "true",
+          "timeout": 5,
+          "number_of_digits": 7,
+          "speech_timeout": "auto",
+          "loop": 1,
+          "gather_language": "en-GB"
+        }
+      },
+      {
+        "name": "HandoffExistingIncident",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "FlexExistingTicket",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Emma-Neural",
+          "offset": {
+            "x": 1030,
+            "y": 1420
+          },
+          "loop": 1,
+          "say": "Thank you. Please hold for while I connect you to one of our advisors",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "FlexExistingTicket",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1090,
+            "y": 1770
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC7239cd75c1565ace1c1220ac56069c59",
+          "attributes": "{\"sntype\":\"existingIncident\",\"incident\":\"{{widgets.ExistingIncident.Digits}}\"}"
+        }
+      },
+      {
+        "name": "FlexNewIncident",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 420,
+            "y": 1740
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC7239cd75c1565ace1c1220ac56069c59",
+          "attributes": "{\"sntype\":\"new\",\"comment\": \"{{widgets.NewIncident.SpeechResult}} \"}"
+        }
+      },
+      {
+        "name": "HandoffNewIncident",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "FlexNewIncident",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Emma-Neural",
+          "offset": {
+            "x": 410,
+            "y": 1390
+          },
+          "loop": 1,
+          "say": "Thank you. Please hold for while I connect you to one of our advisors",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "DTMFnewOrExisting",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "ExistingIncident",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.Intro.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "NewIncident",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.Intro.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Intro.Digits}}",
+          "offset": {
+            "x": 160,
+            "y": 620
+          }
+        }
+      },
+      {
+        "name": "HandoffExistingIncidentNoID",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "FlexExistingTicketNoID",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "voice": "Polly.Emma-Neural",
+          "offset": {
+            "x": 1390,
+            "y": 1420
+          },
+          "loop": 1,
+          "say": "Thank you. Please hold for while I connect you to one of our advisors",
+          "language": "en-GB"
+        }
+      },
+      {
+        "name": "FlexExistingTicketNoID",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1430,
+            "y": 1770
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC7239cd75c1565ace1c1220ac56069c59",
+          "attributes": "{\"sntype\":\"existingIncident\"}"
+        }
+      },
+      {
+        "name": "IntroConv",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "newOrExistingConv",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "timeout"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1380,
+            "y": -190
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "body": "Welcome to ACME Support. If you're contacting about an existing incident please type 1, otherwise type 2 to report a new incident.",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "newOrExistingConv",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "ExistingIncidentConv",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains 1",
+                "arguments": [
+                  "{{widgets.IntroConv.inbound.Body}}"
+                ],
+                "type": "contains",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "NewIncidentConv",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains 2",
+                "arguments": [
+                  "{{widgets.IntroConv.inbound.Body}}"
+                ],
+                "type": "contains",
+                "value": "2"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.IntroConv.inbound.Body}}",
+          "offset": {
+            "x": 1770,
+            "y": 130
+          }
+        }
+      },
+      {
+        "name": "NewIncidentConv",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "HandoffNewIncidentConv",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "timeout"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2300,
+            "y": 460
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "body": "Ok, can you please provide a brief description of the incident?",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "HandoffNewIncidentConv",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "FlexNewIncidentConv",
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2470,
+            "y": 920
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "to": "{{contact.channel.address}}",
+          "body": "Thank you. Please hold for while I connect you to one of our advisors"
+        }
+      },
+      {
+        "name": "FlexNewIncidentConv",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2500,
+            "y": 1230
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC2522a3ba2ecb10c17ffa318ca34bb73a",
+          "attributes": "{\"sntype\":\"new\",\"comment\": \"{{widgets.NewIncidentConv.inbound.Body}}\"}"
+        }
+      },
+      {
+        "name": "ExistingIncidentConv",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "HandoffExistingIncidentConv",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "timeout"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1830,
+            "y": 470
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "body": "Ok, can you please type your incident number?",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "HandoffExistingIncidentConv",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "FlexExistingIncidentConv",
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2020,
+            "y": 920
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "to": "{{contact.channel.address}}",
+          "body": "Thank you. Please hold for while I connect you to one of our advisors"
+        }
+      },
+      {
+        "name": "FlexExistingIncidentConv",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2060,
+            "y": 1240
+          },
+          "workflow": "WW51219b4749856c3c19dfc34e23c86bbe",
+          "channel": "TC2522a3ba2ecb10c17ffa318ca34bb73a",
+          "attributes": "{\"sntype\":\"existingIncident\",\"incident\":\"{{widgets.ExistingIncidentConv.inbound.Body}}\"}"
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
